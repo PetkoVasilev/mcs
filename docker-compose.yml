@@ -1,0 +1,76 @@
+version: '3'
+services:
+  mariadb_cs_pm1:
+    build:
+      context: ./um/.
+      args:
+        - UM_NODE_IP=${UM_NODE_IP}
+        - PM1_NODE_IP=${PM1_NODE_IP}
+        - PM2_NODE_IP=${PM2_NODE_IP}
+    depends_on:
+      - mariadb_cs_um
+      - mariadb_cs_pm2
+    environment:
+      - UM_NODE_IP=${UM_NODE_IP}
+      - PM1_NODE_IP=${PM1_NODE_IP}
+      - PM2_NODE_IP=${PM2_NODE_IP}
+    expose:
+      - 3306
+      - 8606
+    container_name: pm1
+    command: ./entrypoint.sh
+    networks:
+      app_net:
+        ipv4_address: ${PM1_NODE_IP}
+
+  mariadb_cs_um:
+    build:
+      context: ./um/.
+      args:
+        - UM_NODE_IP=${UM_NODE_IP}
+        - PM2_NODE_IP=${PM2_NODE_IP}
+        - PM1_NODE_IP=${PM1_NODE_IP}
+    environment:
+      - UM_NODE_IP=${UM_NODE_IP}
+      - PM1_NODE_IP=${PM1_NODE_IP}
+      - PM2_NODE_IP=${PM2_NODE_IP}
+    expose:
+      - 3306
+      - 22
+      - 8606
+    ports:
+      - "4306:3306"
+    command: /usr/sbin/sshd -D
+    container_name: um
+    networks:
+      app_net:
+        ipv4_address: ${UM_NODE_IP}
+
+  mariadb_cs_pm2:
+    build:
+      context: ./um/.
+      args:
+        - UM_NODE_IP=${UM_NODE_IP}
+        - PM2_NODE_IP=${PM2_NODE_IP}
+        - PM1_NODE_IP=${PM1_NODE_IP}
+    environment:
+      - UM_NODE_IP=${UM_NODE_IP}
+      - PM1_NODE_IP=${PM1_NODE_IP}
+      - PM2_NODE_IP=${PM2_NODE_IP}
+    expose:
+      - 3306
+      - 22
+      - 8606
+    command: /usr/sbin/sshd -D
+    container_name: pm2
+    networks:
+      app_net:
+        ipv4_address: ${PM2_NODE_IP}
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${SUBNET}
