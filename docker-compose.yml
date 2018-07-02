@@ -1,12 +1,7 @@
 version: '3'
 services:
   mariadb_cs_pm1:
-    build:
-      context: ./um/.
-      args:
-        - UM_NODE_IP=${UM_NODE_IP}
-        - PM1_NODE_IP=${PM1_NODE_IP}
-        - PM2_NODE_IP=${PM2_NODE_IP}
+    image: alphatoxic/mcs:latest
     depends_on:
       - mariadb_cs_um
       - mariadb_cs_pm2
@@ -24,12 +19,7 @@ services:
         ipv4_address: ${PM1_NODE_IP}
 
   mariadb_cs_um:
-    build:
-      context: ./um/.
-      args:
-        - UM_NODE_IP=${UM_NODE_IP}
-        - PM2_NODE_IP=${PM2_NODE_IP}
-        - PM1_NODE_IP=${PM1_NODE_IP}
+    image: alphatoxic/mcs:latest
     environment:
       - UM_NODE_IP=${UM_NODE_IP}
       - PM1_NODE_IP=${PM1_NODE_IP}
@@ -47,12 +37,7 @@ services:
         ipv4_address: ${UM_NODE_IP}
 
   mariadb_cs_pm2:
-    build:
-      context: ./um/.
-      args:
-        - UM_NODE_IP=${UM_NODE_IP}
-        - PM2_NODE_IP=${PM2_NODE_IP}
-        - PM1_NODE_IP=${PM1_NODE_IP}
+    image: alphatoxic/mcs:latest
     environment:
       - UM_NODE_IP=${UM_NODE_IP}
       - PM1_NODE_IP=${PM1_NODE_IP}
