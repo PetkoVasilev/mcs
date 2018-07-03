@@ -6,9 +6,9 @@ services:
       - mariadb_cs_um
       - mariadb_cs_pm2
     environment:
-      - UM_NODE_IP=${UM_NODE_IP}
-      - PM1_NODE_IP=${PM1_NODE_IP}
-      - PM2_NODE_IP=${PM2_NODE_IP}
+      - MARIADB_CS_UM_SERVICE_HOST=${MARIADB_CS_UM_SERVICE_HOST}
+      - MARIADB_CS_PM1_SERVICE_HOST=${MARIADB_CS_PM1_SERVICE_HOST}
+      - MARIADB_CS_PM2_SERVICE_HOST=${MARIADB_CS_PM2_SERVICE_HOST}
     expose:
       - 3306
       - 8606
@@ -16,14 +16,10 @@ services:
     command: ./entrypoint.sh
     networks:
       app_net:
-        ipv4_address: ${PM1_NODE_IP}
+        ipv4_address: ${MARIADB_CS_PM1_SERVICE_HOST}
 
   mariadb_cs_um:
     image: alphatoxic/mcs:latest
-    environment:
-      - UM_NODE_IP=${UM_NODE_IP}
-      - PM1_NODE_IP=${PM1_NODE_IP}
-      - PM2_NODE_IP=${PM2_NODE_IP}
     expose:
       - 3306
       - 22
@@ -34,14 +30,10 @@ services:
     container_name: um
     networks:
       app_net:
-        ipv4_address: ${UM_NODE_IP}
+        ipv4_address: ${MARIADB_CS_UM_SERVICE_HOST}
 
   mariadb_cs_pm2:
     image: alphatoxic/mcs:latest
-    environment:
-      - UM_NODE_IP=${UM_NODE_IP}
-      - PM1_NODE_IP=${PM1_NODE_IP}
-      - PM2_NODE_IP=${PM2_NODE_IP}
     expose:
       - 3306
       - 22
@@ -50,7 +42,7 @@ services:
     container_name: pm2
     networks:
       app_net:
-        ipv4_address: ${PM2_NODE_IP}
+        ipv4_address: ${MARIADB_CS_PM2_SERVICE_HOST}
 
 networks:
   app_net:
