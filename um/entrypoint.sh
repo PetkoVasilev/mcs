@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # for kubernetes dns
-export PM1_NODE_IP="$(host mariadb-cs-pm1 | awk '/has address/ { print $4 ; exit }')"
+export PM1_NODE_IP="$(ifconfig eth0 | awk '$1 == "inet" {print $2}')"
 export PM2_NODE_IP="$(host mariadb-cs-pm2 | awk '/has address/ { print $4 ; exit }')"
 export UM_NODE_IP="$(host mariadb-cs-um | awk '/has address/ { print $4 ; exit }')"
 
