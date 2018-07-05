@@ -9,7 +9,8 @@ COPY postCfg2.sh /install/
 RUN chmod +x entrypoint.sh
 RUN chmod +x /install/postCfg2.sh
 
-RUN yum install -y openssh-clients openssh-server
+# postConfigure script relies on ssh, finding the ip by host needs bind-utils
+RUN yum install -y openssh-clients openssh-server bind-utils
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
